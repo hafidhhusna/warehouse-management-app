@@ -1,3 +1,5 @@
-export function Homepage(){
+"use client";
+
+export default function Homepage(){
   return null;
 }
