@@ -36,7 +36,7 @@ export async function POST(req : NextRequest){
     try{
         const {name, quantity} = await req.json();
 
-        if(!name || !quantity || quantity <= 0){
+        if(!name || !quantity || quantity < 0){
             return NextResponse.json(
                 {error : "Nama Barang Wajib diisi dan Jumlah Harus Angka Positif"},
                 {status : 400}
