@@ -11,6 +11,9 @@ export async function GET(req: NextRequest){
         const skip = (page-1) * limit;
 
         const items = await prisma.item.findMany({
+            orderBy : {
+                createdAt : "desc",
+            },
             skip,
             take:limit,
         })
