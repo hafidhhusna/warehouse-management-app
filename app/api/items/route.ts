@@ -1,5 +1,4 @@
 import {prisma} from "@/lib/prisma";
-import { stat } from "fs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest){
@@ -39,6 +38,16 @@ export async function POST(req : NextRequest){
         if(!name || !quantity || quantity < 0){
             return NextResponse.json(
                 {error : "Nama Barang Wajib diisi dan Jumlah Harus Angka Positif"},
+                {status : 400}
+            )
+        }
+
+        //Validasi Security
+        const hasScript = /<[^>]*script[^>]&>/i.test(name);
+        const hasHtml = /<[^>]+>/.test(name);
+        if(hasScript || hasHtml){
+            return NextResponse.json(
+                {eerror : "Input mengandung tag HTML!"},
                 {status : 400}
             )
         }
