@@ -5,6 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 
 export default function HomePage() {
   const [items, setItems] = useState<any[]>([]); // State untuk menyimpan data barang
@@ -49,7 +57,7 @@ export default function HomePage() {
     if (isNaN(quantityInt)) {
       setErrorMessage("Jumlah barang tidak boleh kosong!");
       return;
-    } else if (quantityInt < 1) {
+    } else if (quantityInt < 0) {
       setErrorMessage("Jumlah barang tidak boleh 0!");
       return;
     } else if (quantityInt > 100) {
@@ -77,7 +85,7 @@ export default function HomePage() {
       setQuantity("");
 
       // Memperbarui data barang dengan memanggil API lagi untuk memperbarui list
-      setItems((prevItems) => [...prevItems, result]); // Menambahkan item baru ke state
+      setItems((prevItems) => [result, ...prevItems]); // Menambahkan item baru ke state
     } catch (error: any) {
       setErrorMessage(error.message || "Gagal mencatat barang.");
     }
@@ -105,7 +113,7 @@ export default function HomePage() {
           placeholder="Jumlah"
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
-          min={1}
+          min={NaN}
         />
         {errorMessage && (
           <Alert variant="destructive">
@@ -117,20 +125,28 @@ export default function HomePage() {
 
       <section>
         <h2 className="text-xl font-semibold mb-2">Barang Masuk Terbaru</h2>
-        <div className="space-y-2">
-          {items?.map((item, idx) => (
-            <Card key={idx}>
-              <CardContent className="p-4">
-                <p>
-                  <strong>{item.name}</strong> — {item.quantity} pcs
-                </p>
-                <p className="text-xs text-muted-foreground">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>No</TableHead>
+              <TableHead>Nama Barang</TableHead>
+              <TableHead>Jumlah</TableHead>
+              <TableHead>Tanggal</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {items?.map((item, idx) => (
+              <TableRow key={idx}>
+                <TableCell>{(currentPage - 1) * 10 + idx + 1}</TableCell>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.quantity}</TableCell>
+                <TableCell>
                   {new Date(item.createdAt).toLocaleString()}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </section>
 
       <section className="flex justify-between">
