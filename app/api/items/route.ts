@@ -1,5 +1,21 @@
 import {prisma} from "@/lib/prisma";
+import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
+
+
+function containsMaliciousContent(input: string): boolean {
+    const lower = input.toLowerCase();
+    return (
+        lower.includes("<script") ||
+        lower.includes("</script>") ||
+        /<.*?>/.test(lower) // tag HTML umum
+    );
+}
+
+// Fungsi sanitasi ringan (optional: trimming dan stripping karakter aneh)
+function sanitizeInput(input: string): string {
+    return input.replace(/[\x00-\x1F\x7F]/g, "").trim();
+}
 
 export async function GET(req: NextRequest){
     try{
@@ -35,26 +51,25 @@ export async function POST(req : NextRequest){
     try{
         const {name, quantity} = await req.json();
 
-        if(!name || !quantity || quantity < 0){
+        if(!name || !quantity || quantity < 0 || typeof name !== "string" || typeof quantity !== "number"){
             return NextResponse.json(
                 {error : "Nama Barang Wajib diisi dan Jumlah Harus Angka Positif"},
                 {status : 400}
             )
         }
 
-        //Validasi Security
-        const hasScript = /<[^>]*script[^>]&>/i.test(name);
-        const hasHtml = /<[^>]+>/.test(name);
-        if(hasScript || hasHtml){
+        const sanitizedName = sanitizeInput(name);
+
+        if(containsMaliciousContent(sanitizedName)){
             return NextResponse.json(
-                {eerror : "Input mengandung tag HTML!"},
+                {error : "Nama mengandung karakter tidak valid"},
                 {status : 400}
-            )
-        }
+            );
+        };
 
         const newItem = await prisma.item.create({
             data : {
-                name,
+                name : sanitizedName,
                 quantity,
             },
         })
