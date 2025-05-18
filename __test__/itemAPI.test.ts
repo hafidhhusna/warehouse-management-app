@@ -42,7 +42,7 @@ describe("API: /api/item", () => {
         headers: { "Content-Type": "application/json" },
       });
 
-      const res = await POST(req as unknown as NextRequest);
+      const res = await POST(req as NextRequest);
       const data = await res.json();
 
       expect(res.status).toBe(201);

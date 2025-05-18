@@ -1,6 +1,5 @@
 // __tests__/security.test.ts
 import {POST} from "@/app/api/items/route";
-import { NextRequest } from "next/server";
 
 describe("Security Testing", () => {
   it("should reject malicious inputs like XSS", async () => {
