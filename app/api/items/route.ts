@@ -1,6 +1,19 @@
 import {prisma} from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+function containsMaliciousContent(input: string): boolean {
+    const lower = input.toLowerCase();
+    return (
+        lower.includes("<script") ||
+        lower.includes("</script>") ||
+        /<.*?>/.test(lower) // tag HTML umum
+    );
+}
+
+function sanitizeInput(input: string): string {
+    return input.replace(/[\x00-\x1F\x7F]/g, "").trim();
+}
+
 export async function GET(req: NextRequest){
     try{
         const {searchParams} = new URL(req.url);
@@ -42,19 +55,18 @@ export async function POST(req : NextRequest){
             )
         }
 
-        //Validasi Security
-        const hasScript = /<[^>]*script[^>]&>/i.test(name);
-        const hasHtml = /<[^>]+>/.test(name);
-        if(hasScript || hasHtml){
+        const sanitizedName = sanitizeInput(name);
+        // Cek input berbahaya (XSS/HTML tag)
+        if (containsMaliciousContent(sanitizedName)) {
             return NextResponse.json(
-                {eerror : "Input mengandung tag HTML!"},
-                {status : 400}
-            )
+                { error: "Nama mengandung karakter tidak valid atau berbahaya" },
+                { status: 400 }
+            );
         }
 
         const newItem = await prisma.item.create({
             data : {
-                name,
+                name : sanitizedName,
                 quantity,
             },
         })
