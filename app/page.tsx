@@ -4,34 +4,42 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert } from "@/components/ui/alert";
 
 export default function HomePage() {
   const [items, setItems] = useState<any[]>([]); // State untuk menyimpan data barang
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1); // Menyimpan halaman saat ini
+  const [totalPages, setTotalPages] = useState(1); // Menyimpan total halaman
 
-  // Fetch data saat komponen pertama kali dimuat
+  // Fetch data saat komponen pertama kali dimuat atau saat halaman berubah
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch("/api/items", {
-          method: "GET",
-        });
+        // Menambahkan parameter page dan limit ke URL query string
+        const response = await fetch(
+          `/api/items?page=${currentPage}&limit=10`,
+          {
+            method: "GET",
+          }
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch items");
         }
         const data = await response.json();
-        setItems(data); // Menyimpan data ke state
+        setItems(data.items); // Menyimpan data barang ke state
+        setTotalPages(data.totalPages); // Menyimpan total halaman untuk navigasi
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchItems(); // Memanggil fungsi fetch saat komponen dimuat
-  }, []); // Array kosong untuk hanya menjalankan useEffect sekali saat komponen dimuat
+    fetchItems(); // Memanggil fungsi fetch saat komponen dimuat atau saat halaman berubah
+  }, [currentPage]); // Dependensi pada currentPage agar fetch data baru saat halaman berubah
 
+  // Handle submit untuk form
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrorMessage(""); // Reset error message
@@ -68,12 +76,20 @@ export default function HomePage() {
       setName("");
       setQuantity("");
 
-      // Memperbarui data barang dengan memanggil API lagi
+      // Memperbarui data barang dengan memanggil API lagi untuk memperbarui list
       setItems((prevItems) => [...prevItems, result]); // Menambahkan item baru ke state
     } catch (error: any) {
       setErrorMessage(error.message || "Gagal mencatat barang.");
     }
   }
+
+  // Fungsi untuk mengganti halaman
+  const handlePageChange = (page: number) => {
+    // Pastikan halaman berada dalam rentang yang valid
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page); // Update halaman
+    }
+  };
 
   return (
     <main className="max-w-xl mx-auto p-6 space-y-6">
@@ -93,7 +109,7 @@ export default function HomePage() {
         />
         {errorMessage && (
           <Alert variant="destructive">
-            <AlertDescription>{errorMessage}</AlertDescription>
+            {errorMessage} {/* Pesan error langsung di dalam Alert */}
           </Alert>
         )}
         <Button type="submit">Catat Barang</Button>
@@ -115,6 +131,24 @@ export default function HomePage() {
             </Card>
           ))}
         </div>
+      </section>
+
+      <section className="flex justify-between">
+        <Button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </Button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </Button>
       </section>
     </main>
   );
