@@ -17,8 +17,11 @@ function sanitizeInput(input: string): string {
 export async function GET(req: NextRequest){
     try{
         const {searchParams} = new URL(req.url);
-        const page = parseInt(searchParams.get("page") || "1", 10);
-        const limit = parseInt(searchParams.get("limi") || "10", 10);
+        const rawPage = parseInt(searchParams.get("page") || "1", 10);
+        const rawLimit = parseInt(searchParams.get("limit") || "10", 10);
+
+        const page = Number.isNaN(rawPage) || rawPage < 1 ? 1 : rawPage;
+        const limit = Number.isNaN(rawLimit) || rawLimit < 1 ? 10 : rawLimit;
 
         const skip = (page-1) * limit;
 
