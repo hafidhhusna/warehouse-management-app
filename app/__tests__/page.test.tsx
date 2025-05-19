@@ -29,7 +29,6 @@ describe("HomePage", () => {
 
     render(<HomePage />);
 
-    // Tunggu hingga data di-load dan elemen tabel muncul
     await waitFor(() => {
       expect(screen.getByText("Barang Masuk Terbaru")).toBeInTheDocument();
     });
@@ -68,12 +67,10 @@ describe("HomePage", () => {
 
     render(<HomePage />);
 
-    // Wait for first load
     await waitFor(() => {
       expect(screen.getByText("Barang Masuk Terbaru")).toBeInTheDocument();
     });
 
-    // Fill form
     fireEvent.change(screen.getByPlaceholderText("Nama Barang"), {
       target: { value: "Buku" },
     });
@@ -81,7 +78,6 @@ describe("HomePage", () => {
       target: { value: "5" },
     });
 
-    // POST request response
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
@@ -93,7 +89,6 @@ describe("HomePage", () => {
 
     fireEvent.click(screen.getByText("Catat Barang"));
 
-    // Ensure new item appears
     await waitFor(() => {
       expect(screen.getByText("Buku")).toBeInTheDocument();
       expect(screen.getByText("5")).toBeInTheDocument();
