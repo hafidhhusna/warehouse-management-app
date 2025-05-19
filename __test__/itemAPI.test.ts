@@ -17,7 +17,9 @@ jest.mock("@/lib/prisma", () => ({
 describe("API: /api/item", () => {
   describe("GET", () => {
     it("should return paginated items", async () => {
-      (prisma.item.findMany as jest.Mock).mockResolvedValue([{ id: 1, name: "Item A", quantity: 10 }]);
+      (prisma.item.findMany as jest.Mock).mockResolvedValue([
+        { id: 1, name: "Item A", quantity: 10 }
+      ]);
       (prisma.item.count as jest.Mock).mockResolvedValue(1);
 
       const req = new Request("http://localhost/api/item?page=1&limit=10");
@@ -29,7 +31,49 @@ describe("API: /api/item", () => {
       expect(data.totalPages).toBe(1);
       expect(data.currentPage).toBe(1);
     });
+
+    it("should use default pagination when query params are missing", async () => {
+      (prisma.item.findMany as jest.Mock).mockResolvedValue([
+        { id: 2, name: "Item B", quantity: 20 }
+      ]);
+      (prisma.item.count as jest.Mock).mockResolvedValue(1);
+
+      const req = new Request("http://localhost/api/item");
+      const res = await GET(req as unknown as NextRequest);
+      const data = await res.json();
+
+      expect(res.status).toBe(200);
+      expect(data.items.length).toBe(1);
+      expect(data.totalPages).toBe(1);
+      expect(data.currentPage).toBe(1); // default is page 1
+    });
+
+  it("should handle internal server error", async () => {
+    (prisma.item.findMany as jest.Mock).mockRejectedValue(new Error("DB Error"));
+    (prisma.item.count as jest.Mock).mockResolvedValue(0);
+
+    const req = new Request("http://localhost/api/item?page=1&limit=10");
+    const res = await GET(req as unknown as NextRequest);
+    const data = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(data.error).toBe("Gagal Memuat Data");
   });
+
+  it("should handle invalid query parameters gracefully", async () => {
+    (prisma.item.findMany as jest.Mock).mockResolvedValue([]);
+    (prisma.item.count as jest.Mock).mockResolvedValue(0);
+
+    const req = new Request("http://localhost/api/item?page=abc&limit=xyz");
+    const res = await GET(req as unknown as NextRequest);
+    const data = await res.json();
+
+    expect(res.status).toBe(200); // fallback ke default values
+    expect(data.currentPage).toBe(1);
+    expect(data.totalPages).toBe(0);
+  });
+});
+
 
   describe("POST", () => {
     it("should create a new item", async () => {
@@ -64,3 +108,4 @@ describe("API: /api/item", () => {
     });
   });
 });
+
