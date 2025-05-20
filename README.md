@@ -13,11 +13,13 @@ Sebuah gudang membutuhkan sistem digital untuk mencatat barang masuk guna memuda
 ### Fitur 
 
 
-| No | Fitur                        | Deskripsi                                                                                     | Antarmuka Pengguna                                                        |
-|----|------------------------------|-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
-| 1  | Input Barang                 | Menambahkan barang baru ke sistem dengan memasukkan **Nama Barang** dan **Jumlah**.           | Form input untuk nama barang dan jumlah barang, dengan button **Catat Barang** untuk menyimpan data. |
-| 2  | Tabel Daftar Barang          | Menampilkan semua barang yang sudah tercatat dalam database.                                  | Tabel yang menampilkan **No**, **Nama Barang**, **Jumlah**, dan **Tanggal**. Tabel harus menampilkan 10 terbaru tanpa perlu melakukan refresh. |
-| 3  | Validasi Input dan Error Handling | Validasi input barang untuk memastikan **Nama Barang** tidak kosong dan **Jumlah** adalah angka positif. Sistem harus menangani kesalahan yang terjadi seperti input data harus sesuai dan tidak boleh kosong, sistem diharapkan memberikan pesan error yang sesuai. | Menampilkan pesan error yang sesuai ketika input tidak valid atau terjadi kesalahan sistem. |
+| **No** | **Fitur**                       | **Deskripsi**                                                                                           | **Antarmuka Pengguna**                                                                                                    |
+|--------|----------------------------------|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| 1      | Input Barang                    | Menambahkan barang baru ke sistem dengan memasukkan **Nama Barang** dan **Jumlah**.                      | Form input untuk nama barang dan jumlah barang, dengan tombol **Catat Barang** untuk menyimpan data.                       |
+| 2      | Tabel Daftar Barang             | Menampilkan semua barang yang sudah tercatat dalam database.                                             | Tabel yang menampilkan **No**, **Nama Barang**, **Jumlah**, dan **Tanggal**. Tabel harus menampilkan 10 terbaru tanpa perlu melakukan refresh. |
+| 3      | Validasi Input dan Error Handling| Validasi input barang untuk memastikan **Nama Barang** tidak kosong dan **Jumlah** adalah angka positif. | Menampilkan pesan error yang sesuai ketika input tidak valid atau terjadi kesalahan sistem.                               |
+| 4      | Perpindahan Page                | Beranda akan menampilkan 10 input data terbaru, untuk menampilkan data yang lebih lama perlu melakukan perpindahan page dengan menekan tombol **Previous** atau **Next**. | Button **Next** dan **Previous** yang akan mengarahkan pengguna ke halaman setelah dan sebelumnya. |
+
 
 ### Acceptance Criteria
 
