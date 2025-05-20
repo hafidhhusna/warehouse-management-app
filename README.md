@@ -28,7 +28,7 @@ Repositori ini berisi hasil pekerjaan tim dalam menyelesaikan tugas proyek softw
 ### 📸 Hasil Pengujian
 
 #### 🔹 Screenshot Hasil API Test
-![Hasil API Testing]('docs/api-test-result/api-test-result.png')
+![Hasil API Testing](docs/api-test-result/api-test-result.png)
 
 #### 🔹 Screenshot Coverage Unit Test
 
