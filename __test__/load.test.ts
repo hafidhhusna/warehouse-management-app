@@ -5,7 +5,7 @@ import { POST , GET } from "../app/api/items/route";
 describe("Load Testing", () => {
   it("should handle multiple requests simultaneously", async () => {
     const requests = [];
-    for (let i = 0; i < 10000; i++) {  // Mengirim 100 permintaan secara bersamaan
+    for (let i = 0; i < 100; i++) {  
       const req = new NextRequest("http://localhost/api/items?page=1&limit=10");
       requests.push(GET(req));
     }

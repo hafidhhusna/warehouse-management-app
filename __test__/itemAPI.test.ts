@@ -1,6 +1,5 @@
 import { GET, POST } from "@/app/api/items/route";
 import { NextRequest } from "next/server";
-import { createMocks } from "node-mocks-http";
 import { prisma } from "@/lib/prisma";
 
 // Mock Prisma
@@ -14,7 +13,7 @@ jest.mock("@/lib/prisma", () => ({
   },
 }));
 
-describe("API: /api/item", () => {
+describe("API: /api/items", () => {
   describe("GET", () => {
     it("should return paginated items", async () => {
       (prisma.item.findMany as jest.Mock).mockResolvedValue([
@@ -22,7 +21,7 @@ describe("API: /api/item", () => {
       ]);
       (prisma.item.count as jest.Mock).mockResolvedValue(1);
 
-      const req = new Request("http://localhost/api/item?page=1&limit=10");
+      const req = new Request("http://localhost/api/items?page=1&limit=10");
       const res = await GET(req as unknown as NextRequest);
       const data = await res.json();
 
@@ -38,7 +37,7 @@ describe("API: /api/item", () => {
       ]);
       (prisma.item.count as jest.Mock).mockResolvedValue(1);
 
-      const req = new Request("http://localhost/api/item");
+      const req = new Request("http://localhost/api/items");
       const res = await GET(req as unknown as NextRequest);
       const data = await res.json();
 
@@ -52,7 +51,7 @@ describe("API: /api/item", () => {
     (prisma.item.findMany as jest.Mock).mockRejectedValue(new Error("DB Error"));
     (prisma.item.count as jest.Mock).mockResolvedValue(0);
 
-    const req = new Request("http://localhost/api/item?page=1&limit=10");
+    const req = new Request("http://localhost/api/items?page=1&limit=10");
     const res = await GET(req as unknown as NextRequest);
     const data = await res.json();
 
@@ -64,7 +63,7 @@ describe("API: /api/item", () => {
     (prisma.item.findMany as jest.Mock).mockResolvedValue([]);
     (prisma.item.count as jest.Mock).mockResolvedValue(0);
 
-    const req = new Request("http://localhost/api/item?page=abc&limit=xyz");
+    const req = new Request("http://localhost/api/items?page=abc&limit=xyz");
     const res = await GET(req as unknown as NextRequest);
     const data = await res.json();
 
@@ -80,7 +79,7 @@ describe("API: /api/item", () => {
       const mockItem = { id: 1, name: "Item A", quantity: 5 };
       (prisma.item.create as jest.Mock).mockResolvedValue(mockItem);
 
-      const req = new Request("http://localhost/api/item", {
+      const req = new Request("http://localhost/api/items", {
         method: "POST",
         body: JSON.stringify({ name: "Item A", quantity: 5 }),
         headers: { "Content-Type": "application/json" },
@@ -94,7 +93,7 @@ describe("API: /api/item", () => {
     });
 
     it("should return 400 if invalid payload", async () => {
-      const req = new Request("http://localhost/api/item", {
+      const req = new Request("http://localhost/api/items", {
         method: "POST",
         body: JSON.stringify({ name: "", quantity: -1 }),
         headers: { "Content-Type": "application/json" },
