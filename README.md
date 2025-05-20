@@ -31,6 +31,8 @@ Repositori ini berisi hasil pekerjaan tim dalam menyelesaikan tugas proyek softw
 ![Hasil API Testing](docs/api-tests-result/api-test-result.png)
 
 #### 🔹 Screenshot Coverage Unit Test
+![Hasil Frontend Testing](https://github.com/user-attachments/assets/7594b9ea-5408-4f79-b733-c487bf7eedc1)
+
 
 ### 🖥️ Slide Presentasi
 Tautan ke slide: [Google Slides](https://docs.google.com/presentation/d/1F75Uo4i4qnRPbH0czGJfPy5RJsXQPQFx/edit?usp=sharing&ouid=111007761289601157187&rtpof=true&sd=true)
